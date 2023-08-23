@@ -27,9 +27,12 @@ namespace LicenseServiceGCA.Infrastructure.Database
 				options.UseMySql( configuration.GetConnectionString( "DBConnection" ),
 				new MySqlServerVersion( new Version( 5, 6, 45 ) ) ) );
 
-
 			services.AddTransient<IRepository<User>, UserRepository>();
 			services.AddTransient<IRepository<License>, LicenseRepository>();
+		}
+		public static void AddTestAdminData(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddSingleton<TestData<User>, TestDataUserRepository>();
 		}
 	}
 }

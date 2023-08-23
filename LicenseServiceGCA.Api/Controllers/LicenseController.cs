@@ -10,7 +10,7 @@ using LicenseServiceGCA.Application.Domain.Requests.License;
 using LicenseServiceGCA.Application.Domain.Responses.License;
 
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,6 +52,25 @@ namespace LicenseServiceGCA.Infrastructure.Api.Controllers
 				return Ok( resp );
 			else
 				return BadRequest( resp );
+		}
+		/// <summary>
+		/// Create License
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		[HttpPost]
+		[Authorize]
+		[Route("createLicense")]
+		[SwaggerResponse(StatusCodes.Status200OK, "GET 200 License", typeof(CreateLicenseRequest))]
+		[SwaggerResponse(StatusCodes.Status400BadRequest, "GET 400 License", typeof(CreateLicenseRequest))]
+		public async Task<IActionResult> CreateLicense([FromQuery] CreateLicenseRequest request)
+		{
+			var resp = await _mediator.Send(request);
+
+			if (resp.Success)
+				return Ok(resp);
+			else
+				return BadRequest(resp);
 		}
 	}
 }

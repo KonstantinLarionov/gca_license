@@ -1,9 +1,11 @@
 using System.Text.Json.Serialization;
 
 using LicenseServiceGCA.Application;
+using LicenseServiceGCA.Application.AuthorizeOptions;
 using LicenseServiceGCA.Infrastructure.Database;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder( args );
@@ -18,6 +20,9 @@ builder.Services.AddControllers()
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructureDataBase( builder.Configuration );
+#if DEBUG
+builder.Services.AddTestAdminData(builder.Configuration);//MyTestData
+#endif
 
 #region Swagger Configuration
 
@@ -57,7 +62,23 @@ builder.Services.AddSwaggerGen( swagger =>
 	} );
 } );
 #endregion
-
+#region Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer(options =>
+	{
+		options.TokenValidationParameters = new TokenValidationParameters
+		{
+			ValidateIssuer = true,
+			ValidIssuer = AuthOptions.ISSUER,
+			ValidateAudience = true,
+			ValidAudience = AuthOptions.AUDIENCE,
+			ValidateLifetime = true,
+			IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+			ValidateIssuerSigningKey = true,
+		};
+	});
+#endregion
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -65,23 +86,21 @@ var app = builder.Build();
 if ( app.Environment.IsDevelopment() )
 {
 	app.UseSwagger();
-	app.UseSwaggerUI();
+	app.UseSwaggerUI(c =>
+	{
+		c.SwaggerEndpoint("/swagger/v1/swagger.json", "FractalzBackend");
+		//c.RoutePrefix = string.Empty;
+	});
 }
 
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwagger();
-
-app.UseSwaggerUI( c =>
-{
-	c.SwaggerEndpoint( "/swagger/v1/swagger.json", "FractalzBackend" );
-	c.RoutePrefix = string.Empty;
-} );
-
 
 app.MapControllers();
 
