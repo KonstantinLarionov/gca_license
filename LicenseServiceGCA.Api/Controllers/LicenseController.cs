@@ -63,7 +63,7 @@ namespace LicenseServiceGCA.Infrastructure.Api.Controllers
 		[Route("createLicense")]
 		[SwaggerResponse(StatusCodes.Status200OK, "GET 200 License", typeof(CreateLicenseRequest))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "GET 400 License", typeof(CreateLicenseRequest))]
-		public async Task<IActionResult> CreateLicense([FromQuery] CreateLicenseRequest request)
+		public async Task<IActionResult> CreateLicense([FromBody] CreateLicenseRequest request)
 		{
 			var resp = await _mediator.Send(request);
 

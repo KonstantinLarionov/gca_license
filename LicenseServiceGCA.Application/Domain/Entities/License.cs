@@ -13,5 +13,7 @@ namespace LicenseServiceGCA.Application.Domain.Entities
 		public DateTime LicenseEnd { get; set; } 
 		public bool IsLicensed { get; set; }
 		public string OpenToken { get; set; }
+		public string Email { get; set; }
+		public string Idtx { get; set; }
 	}
 }

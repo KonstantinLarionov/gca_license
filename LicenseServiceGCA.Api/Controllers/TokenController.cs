@@ -1,5 +1,6 @@
 ﻿using LicenseServiceGCA.Application.Domain.Requests.License;
 using LicenseServiceGCA.Application.Domain.Requests.Token;
+using LicenseServiceGCA.Application.Domain.Responses.Token;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -39,7 +40,7 @@ namespace LicenseServiceGCA.Infrastructure.Api.Controllers
 		[AllowAnonymous]
 		[SwaggerResponse(StatusCodes.Status200OK, "GET 200 License", typeof(GetTokenRequest))]
 		[SwaggerResponse(StatusCodes.Status400BadRequest, "GET 400 License", typeof(GetTokenRequest))]
-		public async Task<IActionResult> GetToken([FromQuery] GetTokenRequest request)
+		public async Task<IActionResult> GetToken([FromBody] GetTokenRequest request)
 		{			
 			var resp = await _mediator.Send(request);
 

@@ -21,21 +21,29 @@ namespace LicenseServiceGCA.Application.Handlers.License
 			this._repository = repository;
 		}
 
-		public async Task<CreateLicenseResponse> Handle( CreateLicenseRequest request, CancellationToken cancellationToken )
+		public async Task<CreateLicenseResponse> Handle(CreateLicenseRequest request, CancellationToken cancellationToken)
 		{
 			var entity = request.License;
-			var res = _repository.Create( entity );
+			var res = _repository.Create(entity);
 
 			var response = new CreateLicenseResponse();
 
-			if ( res == 0 )
+			if (res == 0)
 			{
 				response.Success = false;
 				response.Message = "Failed to create a record in the database";
 				return response;
 			}
-			
+			var getHandler = new GetLicenseHandler(_repository);
+			var getResponse = await getHandler.Handle(new GetLicenseRequest() { OpenToken = request.License.OpenToken },new CancellationToken());
+			response.Id = entity.Id;
+			response.Hash = getResponse.Hash;
+			response.LicenseEnd = entity.LicenseEnd;
+			response.IsLicensed = entity.IsLicensed;
 			response.Success = true;
+			response.Email = entity.Email;
+			response.Idtx = entity.Idtx;
+
 			return response;
 		}
 	}
