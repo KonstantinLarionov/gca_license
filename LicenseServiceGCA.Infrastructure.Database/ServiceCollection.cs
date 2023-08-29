@@ -24,8 +24,7 @@ namespace LicenseServiceGCA.Infrastructure.Database
 		public static void AddInfrastructureDataBase( this IServiceCollection services, IConfiguration configuration )
 		{
 			services.AddDbContext<LicenseServiceGCAContext>( options =>
-				options.UseMySql( configuration.GetConnectionString( "DBConnection" ),
-				new MySqlServerVersion( new Version( 5, 6, 45 ) ) ) );
+				options.UseNpgsql( configuration.GetConnectionString( "DBConnection" )) );
 
 			services.AddTransient<IRepository<User>, UserRepository>();
 			services.AddTransient<IRepository<License>, LicenseRepository>();

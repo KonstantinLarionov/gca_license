@@ -23,6 +23,12 @@ namespace LicenseServiceGCA.Application.Handlers.License
 
 		public async Task<CreateLicenseResponse> Handle(CreateLicenseRequest request, CancellationToken cancellationToken)
 		{
+            var license = _repository.Get(x=>x.Idtx == request.License.Idtx).FirstOrDefault();
+            if ( license != null )
+            {
+                return new CreateLicenseResponse() { Message = "Ошибка обратитесь в поддержку.", Success = false };
+            }
+
 			var entity = request.License;
 			var res = _repository.Create(entity);
 
@@ -35,8 +41,10 @@ namespace LicenseServiceGCA.Application.Handlers.License
 				return response;
 			}
 			var getHandler = new GetLicenseHandler(_repository);
-			var getResponse = await getHandler.Handle(new GetLicenseRequest() { OpenToken = request.License.OpenToken },new CancellationToken());
-			response.Id = entity.Id;
+			var getResponse = await getHandler.Handle(new GetLicenseRequest() { OpenToken = request.License.OpenToken }, cancellationToken);
+
+            response.OpenToken = entity.OpenToken;
+            response.Id = entity.Id;
 			response.Hash = getResponse.Hash;
 			response.LicenseEnd = entity.LicenseEnd;
 			response.IsLicensed = entity.IsLicensed;

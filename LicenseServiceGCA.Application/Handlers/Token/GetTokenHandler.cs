@@ -18,15 +18,15 @@ namespace LicenseServiceGCA.Application.Handlers.Token
 {
 	public class GetTokenHandler : IRequestHandler<GetTokenRequest, GetTokenResponse>
 	{
-		private readonly TestData<Domain.Entities.User> _repository;
+		private readonly IRepository<Domain.Entities.User> _repository;
 
-		public GetTokenHandler(TestData<Domain.Entities.User> repository)
+		public GetTokenHandler(IRepository<Domain.Entities.User> repository)
 		{
 			this._repository = repository;
 		}
 		public async Task<GetTokenResponse> Handle(GetTokenRequest request, CancellationToken cancellationToken)
 		{		
-			Domain.Entities.User user = _repository.Get(u => request.Login == u.Login).SingleOrDefault();
+			Domain.Entities.User user = _repository.Get(u => request.Login == u.Login).FirstOrDefault();
 			if (user == null)
 			{
 				var resp = new GetTokenResponse();

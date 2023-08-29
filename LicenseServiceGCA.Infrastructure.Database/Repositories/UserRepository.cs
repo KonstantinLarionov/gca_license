@@ -25,7 +25,8 @@ namespace LicenseServiceGCA.Infrastructure.Database.Repositories
 		public UserRepository( LicenseServiceGCAContext context )
 		{
 			_context = context;
-			_dbSet = context.Set<User>();
+            _context.Database.EnsureCreated();
+            _dbSet = context.Set<User>();
 		}
 		/// <summary>
 		/// Create

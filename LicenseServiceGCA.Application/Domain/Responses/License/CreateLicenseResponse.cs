@@ -8,8 +8,9 @@ namespace LicenseServiceGCA.Application.Domain.Responses.License
 {
     public class CreateLicenseResponse : BaseResponse
     {
-		//Данный калс 
-		public Guid Id { get; set; }
+        public string OpenToken { get; set; }
+
+        public Guid Id { get; set; }
 		public string Hash { get; set; } 
 		public DateTime LicenseEnd { get; set; } 
 		public bool IsLicensed { get; set; } 
